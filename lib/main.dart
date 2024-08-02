@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tic_tac/TicTacSpitial.dart';
 import 'package:tic_tac/TicTacToe.dart';
 
 void main() {
@@ -14,10 +15,12 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
+        scaffoldBackgroundColor: Colors.teal,
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home:   TicTacToe(),
+      debugShowCheckedModeBanner: false,
+      home:   TicTacSpatial(),
     );
   }
 }

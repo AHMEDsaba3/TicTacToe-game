@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -11,6 +12,10 @@ class _TicTacToeState extends State<TicTacToe> {
   late List<List<String>> _board;
   late String _currentPlayer;
   late String _winner;
+  late List<String> list = ['X','O'];
+  final _random = new Random();
+
+
 
   @override
   void initState() {
@@ -21,7 +26,7 @@ class _TicTacToeState extends State<TicTacToe> {
   void _resetGame() {
     setState(() {
       _board = List.generate(3, (_) => List.filled(3, ''));
-      _currentPlayer = 'X';
+      _currentPlayer = list[_random.nextInt(list.length)];
       _winner = '';
     });
   }
@@ -79,16 +84,27 @@ class _TicTacToeState extends State<TicTacToe> {
           children: List.generate(3, (col) {
             return GestureDetector(
               onTap: () => _makeMove(row, col),
-              child: Container(
-                width: 100,
-                height: 100,
-                decoration: BoxDecoration(
-                  border: Border.all(),
-                ),
-                child: Center(
-                  child: Text(
-                    _board[row][col],
-                    style: TextStyle(fontSize: 40),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Container(
+                  width: 100,
+                  height: 100,
+                  decoration: BoxDecoration(
+                    color: Colors.teal,
+                    border: Border.all(color: Colors.transparent),
+                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                    boxShadow: [BoxShadow(
+                        spreadRadius: 1,
+                        blurRadius: 4,
+                        offset: Offset.zero
+                    ),
+                    ]
+                  ),
+                  child: Center(
+                    child: Text(
+                      _board[row][col],
+                      style: TextStyle(fontSize: 40,),
+                    ),
                   ),
                 ),
               ),
