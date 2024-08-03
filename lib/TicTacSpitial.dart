@@ -2,8 +2,11 @@ import 'dart:math';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:tic_tac/constant.dart';
 
 class TicTacSpatial extends StatefulWidget {
+  const TicTacSpatial({super.key});
+
   @override
   _TicTacToeState createState() => _TicTacToeState();
 }
@@ -13,9 +16,11 @@ class _TicTacToeState extends State<TicTacSpatial> {
   late String _currentPlayer;
   late String _winner;
   late List<String> list = ['X', 'O'];
-  final _random = new Random();
+  final _random = Random();
   late List<Point<int>> _xMoves;
   late List<Point<int>> _oMoves;
+  late bool RuleOn=false;
+  int NumOfSteps= 5;
 
   @override
   void initState() {
@@ -39,12 +44,12 @@ class _TicTacToeState extends State<TicTacSpatial> {
         _board[row][col] = _currentPlayer;
         if (_currentPlayer == 'X') {
           _xMoves.add(Point(row, col));
-          if (_xMoves.length > 3) {
+          if (_xMoves.length > NumOfSteps) {
             _removeRandomMove(_xMoves);
           }
         } else {
           _oMoves.add(Point(row, col));
-          if (_oMoves.length > 3) {
+          if (_oMoves.length > NumOfSteps) {
             _removeRandomMove(_oMoves);
           }
         }
@@ -84,71 +89,96 @@ class _TicTacToeState extends State<TicTacSpatial> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.teal,
-        title: Center(child: Text('Tic Tac Toe',style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),)),
+        title: const Center(child: Text('Tic Tac Toe',style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),)),
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          _buildBoard(),
-          SizedBox(height: 20),
-          _buildStatus(),
-          SizedBox(height: 20),
-          _buildResetButton(),
-        ],
+      body: Padding(
+        padding: const EdgeInsets.all(15.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container( width: widthR(220, context),
+                    height: heightR(20, context),
+                    child: Text("Play with Rule",style: TextStyle(fontSize: sizeR(15, context),color: Colors.white,fontWeight: FontWeight.bold),)),
+                Transform.scale(
+                  scale: sizeR(0.8, context),
+                  child: Switch(value: RuleOn, activeTrackColor: Color(0xff13a795),
+                      inactiveThumbColor: Colors.white,
+                      inactiveTrackColor: Colors.grey[300],
+                      trackOutlineColor: MaterialStatePropertyAll(Colors.transparent),
+                      onChanged: (value) {
+                    setState(() {
+                      RuleOn=!RuleOn;
+                      RuleOn==false ? NumOfSteps=5 : NumOfSteps=3;
+                      print(RuleOn);
+                      print(NumOfSteps);
+                    });
+                      },
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: heightR(20, context),),
+            _buildBoard(),
+            const SizedBox(height: 20),
+            _buildStatus(),
+            const SizedBox(height: 20),
+            _buildResetButton(),
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildBoard() {
-    return Padding(
-      padding: const EdgeInsets.all(10.0),
-      child: Container(
-        decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.all(Radius.circular(8))),
-        child: Column(
-          children: List.generate(3, (row) {
-            return Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(3, (col) {
-                return GestureDetector(
-                  onTap: () => _makeMove(row, col),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Container(
-                      width: 100,
-                      height: 100,
-                      decoration: BoxDecoration(
-                        color: Colors.teal,
-                        border: Border.all(color: Colors.transparent),
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
-                        boxShadow: [
-                          BoxShadow(
-                            spreadRadius: 1,
-                            blurRadius: 4,
-                            offset: Offset.zero,
-                          ),
-                        ],
-                      ),
-                      child: Center(
-                        child: Text(
-                          _board[row][col],
-                          style: TextStyle(fontSize: 40,
-                            color: _board[row][col] == 'X'
-                                ? Colors.amber
-                                : _board[row][col] == 'O'
-                                ? Colors.tealAccent
-                                : Colors.black,
-                          ),
+    return Container(
+      decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.all(Radius.circular(8))),
+      child: Column(
+        children: List.generate(3, (row) {
+          return Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: List.generate(3, (col) {
+              return GestureDetector(
+                onTap: () => _makeMove(row, col),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                    width: 100,
+                    height: 100,
+                    decoration: BoxDecoration(
+                      color: Colors.teal,
+                      border: Border.all(color: Colors.transparent),
+                      borderRadius: const BorderRadius.all(Radius.circular(10)),
+                      boxShadow: const [
+                        BoxShadow(
+                          spreadRadius: 1,
+                          blurRadius: 4,
+                          offset: Offset.zero,
+                        ),
+                      ],
+                    ),
+                    child: Center(
+                      child: Text(
+                        _board[row][col],
+                        style: TextStyle(fontSize: 40,
+                          color: _board[row][col] == 'X'
+                              ? Colors.amber
+                              : _board[row][col] == 'O'
+                              ? Colors.white
+                              : Colors.black,
                         ),
                       ),
                     ),
                   ),
-                );
-              }),
-            );
-          }),
-        ),
+                ),
+              );
+            }),
+          );
+        }),
       ),
     );
   }
@@ -160,14 +190,18 @@ class _TicTacToeState extends State<TicTacSpatial> {
           : _winner == 'Draw'
           ? 'It\'s a Draw!'
           : 'Winner: $_winner',
-      style: TextStyle(fontSize: 24),
+      style: const TextStyle(fontSize: 24,color: Colors.white,fontWeight: FontWeight.w500),
     );
   }
 
   Widget _buildResetButton() {
     return ElevatedButton(
+      style: ElevatedButton.styleFrom(backgroundColor: const Color(0xff004038),
+          fixedSize: Size(double.maxFinite, sizeR(48, context)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(sizeR(17, context)))
+      ),
       onPressed: _resetGame,
-      child: Text('Restart Game'),
+      child: const Text('Restart Game',style: TextStyle(color: Colors.amber),),
     );
   }
 }
