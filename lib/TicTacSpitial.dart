@@ -104,7 +104,7 @@ class _TicTacToeState extends State<TicTacSpatial> {
                     child: Text("Play with Rule",style: TextStyle(fontSize: sizeR(15, context),color: Colors.white,fontWeight: FontWeight.bold),)),
                 Transform.scale(
                   scale: sizeR(0.8, context),
-                  child: Switch(value: RuleOn, activeTrackColor: Color(0xff13a795),
+                  child: Switch(value: RuleOn, activeTrackColor: Colors.amber,
                       inactiveThumbColor: Colors.white,
                       inactiveTrackColor: Colors.grey[300],
                       trackOutlineColor: MaterialStatePropertyAll(Colors.transparent),
